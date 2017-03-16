@@ -1,8 +1,6 @@
 #include <windows.h>
 #include <stdlib.h>
 #include <time.h>
-#include <string>
-using namespace std;
 
 #define IDC_BUTTON_1 101
 #define IDC_BUTTON_2 102
@@ -84,7 +82,6 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
     static HWND button_1, button_2, text_1, text_2;
     HFONT hfont, hfont_2;
     static bool flag_1 = false;
-    srand (time(NULL));
 
     switch(msg)
     {
@@ -93,7 +90,6 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
     {
         char szFileName[MAX_PATH];
         HINSTANCE hInstance = GetModuleHandle(NULL);
-
         GetModuleFileName(hInstance, szFileName, MAX_PATH);
         MessageBox(hwnd, szFileName, "This program is:", MB_OK | MB_ICONINFORMATION);
     }
@@ -309,17 +305,31 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
         {
         case SC_MINIMIZE:
         {
-           // SetBkColor(HDC GetDC(hwnd), RGB(240, 24, 23));
+            srand(GetTickCount());
+            int r, g, b;
+            r = rand() % 255 + 1;
+            g = rand() % 255 + 1;
+            b = rand() % 255 + 1;
+            SetClassLong(hwnd, GCL_HBRBACKGROUND, (LONG)CreateSolidBrush(RGB(r, g, b)));
+            InvalidateRect(hwnd, NULL, TRUE);
             break;
         }
 
         case SC_MAXIMIZE:
         {
-            RECT rc;
-            GetWindowRect ( hwnd, &rc ) ;
-            int xPos = rand() % 800;
-            int yPos = rand() % 800;
-            SetWindowPos( hwnd, 0, xPos, yPos, 0, 0, SWP_NOZORDER | SWP_NOSIZE );
+            TCHAR str_x[256], str_y[256];
+            RECT rect;
+            static int x;
+            static int y;
+            srand(GetTickCount());
+            x = rand() % 400;
+            y = rand() % 400;
+            wsprintf(str_x,("X position = %d"), x);
+            wsprintf(str_y, ("Y position = %d"), y);
+            GetWindowRect ( hwnd, &rect ) ;
+            MoveWindow (hwnd, x, y, (rect.right - rect.left), (rect.bottom - rect.top), TRUE);
+            SetWindowText(text_1, str_x);
+            SetWindowText(text_2, str_y);
             break;
         }
 
@@ -340,4 +350,4 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 
     }
     return 0;
-    }
+}

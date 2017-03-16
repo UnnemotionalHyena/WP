@@ -1,0 +1,7 @@
+# depslib dependency file v1.0
+1489680507 source:c:\users\unnemotional hyena\desktop\univer\pwgit\lab#1\main.cpp
+	<windows.h>
+	<stdlib.h>
+	<time.h>
+	<string>
+
