@@ -322,8 +322,8 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
             static int x;
             static int y;
             srand(GetTickCount());
-            x = rand() % 400;
-            y = rand() % 400;
+            x = rand() % 401;
+            y = rand() % 401;
             wsprintf(str_x,("X position = %d"), x);
             wsprintf(str_y, ("Y position = %d"), y);
             GetWindowRect ( hwnd, &rect ) ;
@@ -335,7 +335,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 
         case SC_CLOSE:
         {
-            if(MessageBox(hwnd, "Are you sure you want to quit?", "Close?", MB_YESNO | MB_ICONQUESTION) == IDYES)
+            if(MessageBox(hwnd, "Are you sure you want to quit?", "Close?", MB_YESNO | MB_ICONQUESTION) == IDNO)
             {
                 exit(1);
             }
