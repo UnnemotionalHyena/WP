@@ -1,0 +1,13 @@
+#include <windows.h>
+
+#define IDM_MENU 40001
+
+#define IDM_FILE_THIS 40002
+#define IDM_FILE_CLOSE 40003
+#define IDM_FILE_INFO 40004
+#define IDM_DLGBOX 40005
+#define IDM_STATIC 40006
+#define IDM_EXIT_KEY 40007
+#define IDM_MAXIMIZE_KEY 40008
+#define IDM_SCROLL_BAR1 40009
+#define IDM_SCROLL_BAR2 40010

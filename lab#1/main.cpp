@@ -172,9 +172,9 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
                                 (HMENU)IDC_TEXT_2,
                                 GetModuleHandle(NULL),
                                 NULL);
-        hfont = CreateFont(16,20,100,40,FW_BLACK,FALSE,TRUE,FALSE,DEFAULT_CHARSET,OUT_DEFAULT_PRECIS,
+        hfont = CreateFont(16, 20, 100, 40,FW_BLACK,FALSE,TRUE,FALSE,DEFAULT_CHARSET,OUT_DEFAULT_PRECIS,
                            CLIP_DEFAULT_PRECIS,PROOF_QUALITY, VARIABLE_PITCH,TEXT("Courier New"));
-        hfont_2 = CreateFont(0, 0, 0,0,0,0,0,0,0,0,0,0,0,TEXT("Courier New"));
+        hfont_2 = CreateFont(0,0,0,0,0,0,0,0,0,0,0,0,0,TEXT("Courier New"));
 
         SendMessage(button_1, WM_SETFONT, (WPARAM)hfont, MAKELPARAM(FALSE, 0));
         SendMessage(text_2, WM_SETFONT, (WPARAM)hfont_2, MAKELPARAM(FALSE, 0));
@@ -225,8 +225,8 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
             LPDRAWITEMSTRUCT lpdis = (DRAWITEMSTRUCT*)lParam;
             SIZE size;
             GetTextExtentPoint32(lpdis->hDC, "O O", 3, &size);
-            SetTextColor(lpdis->hDC, RGB(10,13,45));
-            SetBkColor(lpdis->hDC, RGB(128,0,128));
+            SetTextColor(lpdis->hDC, RGB(10, 13, 45));
+            SetBkColor(lpdis->hDC, RGB(128, 0, 128));
 
             ExtTextOut(
                 lpdis->hDC,
@@ -253,8 +253,8 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
         int x = (rect.right - rect.left)/2 - 100;
         int y = (rect.bottom - rect.top)/2 + 20;
 
-        MoveWindow (button_1, x-20, y, 100, 40, TRUE);
-        MoveWindow(button_2, x+120, y, 100, 40, TRUE);
+        MoveWindow (button_1, x - 20, y, 100, 40, TRUE);
+        MoveWindow(button_2, x + 120, y, 100, 40, TRUE);
         MoveWindow(text_1, x - 205, y - 140, 300, 100, TRUE);
         MoveWindow(text_2, x + 110, y - 140, 300, 100, TRUE);
         break;
@@ -307,9 +307,9 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
         {
             srand(GetTickCount());
             int r, g, b;
-            r = rand() % 255 + 1;
-            g = rand() % 255 + 1;
-            b = rand() % 255 + 1;
+            r = rand() % 255;
+            g = rand() % 255;
+            b = rand() % 255;
             SetClassLong(hwnd, GCL_HBRBACKGROUND, (LONG)CreateSolidBrush(RGB(r, g, b)));
             InvalidateRect(hwnd, NULL, TRUE);
             break;
