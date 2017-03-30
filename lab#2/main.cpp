@@ -87,6 +87,7 @@ LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM
     static HWND scrollbar1, scrollbar2;
     static int iVscrollPos = 500;
     static int x, y;
+    static RECT rect_win;
     x = GetSystemMetrics(SM_CXSCREEN);
     y = GetSystemMetrics(SM_CYSCREEN);
 
@@ -94,7 +95,7 @@ LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM
     {
     case WM_CREATE:
     {
-        scrollbar1 = CreateWindowEx(NULL,
+        scrollbar1 = CreateWindowEx(0,
 
                                     TEXT("SCROLLBAR"),
                                     0,
@@ -107,17 +108,31 @@ LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM
                                     (HMENU)IDM_SCROLL_BAR1,
                                     GetModuleHandle(NULL),
                                     NULL);
+        scrollbar2 = CreateWindowEx(0,
+                                    TEXT("SCROLLBAR"),
+                                    0,
+                                    WS_CHILD | WS_VISIBLE | SBS_HORZ,
+                                    100,
+                                    80,
+                                    200,
+                                    20,
+                                    hwnd,
+                                    (HMENU)IDM_SCROLL_BAR2,
+                                    GetModuleHandle(NULL),
+                                    NULL);
 
         RegisterHotKey(hwnd, IDM_EXIT_KEY, MOD_CONTROL, 0x57);
         RegisterHotKey(hwnd, IDM_MAXIMIZE_KEY, MOD_SHIFT, VK_RETURN);
 
+        SetScrollRange (scrollbar1, SB_CTL, 500, x, FALSE);
+        SetScrollRange (scrollbar2, SB_CTL, 400, y, FALSE);
 
-        SetScrollRange (scrollbar1, SB_CTL, 500, y, FALSE);
-        //SetScrollPos(scrollbar1, SB_CTL, iVscrollPos, TRUE);
     }
+    break;
 
     case WM_COMMAND:
     {
+
         switch(LOWORD((wParam)))
         {
         case IDM_FILE_THIS:
@@ -169,6 +184,16 @@ LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM
     break;
 
     case WM_HSCROLL:
+        GetWindowRect(hwnd, &rect_win);
+        if (GetDlgCtrlID((HWND)lParam) == IDM_SCROLL_BAR1)
+        {
+            iVscrollPos = rect_win.right - rect_win.left;
+        }
+        else if (GetDlgCtrlID((HWND)lParam) == IDM_SCROLL_BAR2)
+        {
+            iVscrollPos = rect_win.bottom - rect_win.top;
+        }
+
         switch (LOWORD (wParam))
         {
         case SB_LINELEFT:
@@ -177,34 +202,80 @@ LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM
         case SB_LINERIGHT:
             iVscrollPos += 10 ;
             break ;
+        case SB_PAGELEFT:
+            iVscrollPos -= 30;
+            break;
+        case SB_PAGERIGHT:
+            iVscrollPos += 30;
+            break;
         case SB_THUMBPOSITION:
             iVscrollPos = HIWORD (wParam) ;
             break ;
         default :
             break ;
         }
-        iVscrollPos = max (0, min (iVscrollPos, y));
-        if (iVscrollPos != GetScrollPos (hwnd, SB_VERT))
+        if (GetDlgCtrlID((HWND)lParam) == IDM_SCROLL_BAR1)
         {
-            SetScrollPos (hwnd, SB_VERT, iVscrollPos, TRUE) ;
-            InvalidateRect (hwnd, NULL, TRUE) ;
+            if (iVscrollPos < 500)
+            {
+                iVscrollPos = 500;
+                EnableScrollBar(scrollbar1, SB_CTL, ESB_DISABLE_RIGHT);
+            }
+            else if (iVscrollPos > x)
+            {
+                iVscrollPos = x;
+                EnableScrollBar(scrollbar1, SB_CTL, ESB_DISABLE_LEFT);
+            }
+            if (iVscrollPos != GetScrollPos (hwnd, SB_CTL))
+            {
+                SetScrollPos (hwnd, SB_CTL, iVscrollPos, TRUE) ;
+            }
+            MoveWindow (hwnd, int(rect_win.left), int(rect_win.top), iVscrollPos, rect_win.bottom - rect_win.top, TRUE);
+            SetScrollPos(scrollbar1, SB_CTL, rect_win.right - rect_win.left, TRUE);
         }
-        SetScrollPos(scrollbar1, SB_CTL, iVscrollPos, TRUE);
-        MoveWindow (hwnd, 0, 0, iVscrollPos*(1.77778), iVscrollPos, TRUE);
+        else if (GetDlgCtrlID((HWND)lParam) == IDM_SCROLL_BAR2)
+        {
+            if (iVscrollPos < 400)
+            {
+                iVscrollPos = 400;
+                EnableScrollBar(scrollbar2, SB_CTL, ESB_DISABLE_RIGHT);
+            }
+            else if (iVscrollPos > y)
+            {
+                iVscrollPos = y;
+                EnableScrollBar(scrollbar2, SB_CTL, ESB_DISABLE_LEFT);
+            }
+            if (iVscrollPos != GetScrollPos (hwnd, SB_CTL))
+            {
+                SetScrollPos (hwnd, SB_CTL, iVscrollPos, TRUE) ;
+            }
+            MoveWindow (hwnd, int(rect_win.left), int(rect_win.top), rect_win.right - rect_win.left, iVscrollPos, TRUE);
+            SetScrollPos(scrollbar2, SB_CTL, rect_win.bottom - rect_win.top, TRUE);
+        }
         break;
+
+    case WM_SIZE:
+    {
+        GetWindowRect(hwnd, &rect_win);
+        SetScrollPos(scrollbar1, SB_CTL, rect_win.right - rect_win.left, TRUE);
+        SetScrollPos(scrollbar2, SB_CTL, rect_win.bottom - rect_win.top, TRUE);
+    }
+    break;
 
     case WM_GETMINMAXINFO:
     {
         LPMINMAXINFO winSize = (LPMINMAXINFO)lParam;
-        winSize->ptMinTrackSize.x = 645;
-        winSize->ptMinTrackSize.y = 300;
+        winSize->ptMinTrackSize.x = 500;
+        winSize->ptMinTrackSize.y = 400;
+        winSize->ptMaxSize.x = x;
+        winSize->ptMaxSize.y = y;
     }
     break;
 
     case WM_DESTROY:
         PostQuitMessage (0);       /* send a WM_QUIT to the message queue */
         break;
-    default:                      /* for messages that we don't deal with */
+    default:                /* for messages that we don't deal with */
         return DefWindowProc (hwnd, message, wParam, lParam);
     }
 
@@ -226,6 +297,7 @@ BOOL CALLBACK DialogProc(HWND hwndDlg, UINT msg, WPARAM wParam, LPARAM lParam)
             return TRUE;
         }
         break;
+
     }
     return FALSE;
 }
