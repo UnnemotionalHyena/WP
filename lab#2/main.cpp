@@ -14,6 +14,7 @@ BOOL CALLBACK DialogProc(HWND hwndDlg, UINT msg, WPARAM wParam, LPARAM lParam);
 
 /*  Make the class name into a global variable  */
 TCHAR szClassName[ ] = _T("CodeBlocksWindowsApp");
+static HINSTANCE hInst;
 
 int WINAPI WinMain (HINSTANCE hThisInstance,
                     HINSTANCE hPrevInstance,
@@ -32,8 +33,8 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
     wincl.cbSize = sizeof (WNDCLASSEX);
 
     /* Use default icon and mouse-pointer */
-    wincl.hIcon = LoadIcon (NULL, IDI_APPLICATION);
-    wincl.hIconSm = LoadIcon (NULL, IDI_APPLICATION);
+    wincl.hIcon = LoadIcon (hThisInstance, MAKEINTRESOURCE(IDM_ICON));//LoadIcon (NULL, IDI_APPLICATION);
+    wincl.hIconSm = LoadIcon (hThisInstance, MAKEINTRESOURCE(IDM_ICON));
     wincl.hCursor = LoadCursor (NULL, IDC_ARROW);
     wincl.lpszMenuName = MAKEINTRESOURCE(IDM_MENU);                 /* No menu */
     wincl.cbClsExtra = 0;                      /* No extra bytes after the window class */
@@ -91,7 +92,7 @@ LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM
     x = GetSystemMetrics(SM_CXSCREEN);
     y = GetSystemMetrics(SM_CYSCREEN);
 
-    switch (message)                  /* handle the messages */
+    switch (message)
     {
     case WM_CREATE:
     {
@@ -127,6 +128,7 @@ LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM
         SetScrollRange (scrollbar1, SB_CTL, 500, x, FALSE);
         SetScrollRange (scrollbar2, SB_CTL, 400, y, FALSE);
 
+        hInst = ((LPCREATESTRUCT)lParam)->hInstance;
     }
     break;
 
@@ -271,6 +273,33 @@ LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM
         winSize->ptMaxSize.y = y;
     }
     break;
+
+    case WM_SETCURSOR:
+    {
+        if (LOWORD(lParam) == HTBOTTOMLEFT || LOWORD(lParam) == HTTOPRIGHT)
+        {
+            SetCursor(LoadCursor(hInst, MAKEINTRESOURCE(IDM_CURSOR2)));
+        }
+        else if (LOWORD(lParam) == HTBOTTOMRIGHT || LOWORD(lParam) == HTTOPLEFT)
+        {
+            SetCursor(LoadCursor(hInst, MAKEINTRESOURCE(IDM_CURSOR3)));
+        }
+        else if (LOWORD(lParam) == HTBOTTOM || LOWORD(lParam) == HTTOP)
+        {
+            SetCursor(LoadCursor(hInst, MAKEINTRESOURCE(IDM_CURSOR4)));
+        }
+        else if (LOWORD(lParam) == HTLEFT || LOWORD(lParam) == HTRIGHT)
+        {
+            SetCursor(LoadCursor(hInst, MAKEINTRESOURCE(IDM_CURSOR5)));
+        }
+        else
+        {
+            SetCursor(LoadCursor(hInst, MAKEINTRESOURCE(IDM_CURSOR)));
+        }
+        return TRUE;
+    }
+
+
 
     case WM_DESTROY:
         PostQuitMessage (0);       /* send a WM_QUIT to the message queue */
