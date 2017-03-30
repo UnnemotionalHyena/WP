@@ -85,9 +85,9 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
 LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     static HINSTANCE hInstance;
-    static HWND scrollbar1, scrollbar2;
+    static HWND scrollbar1, scrollbar2, listBox;
     static int iVscrollPos = 500;
-    static int x, y;
+    static int x, y, index, R = 255, G = 255, B = 255, x_2, y_2;
     static RECT rect_win;
     x = GetSystemMetrics(SM_CXSCREEN);
     y = GetSystemMetrics(SM_CYSCREEN);
@@ -97,7 +97,6 @@ LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM
     case WM_CREATE:
     {
         scrollbar1 = CreateWindowEx(0,
-
                                     TEXT("SCROLLBAR"),
                                     0,
                                     WS_CHILD | WS_VISIBLE | SBS_HORZ,
@@ -109,6 +108,7 @@ LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM
                                     (HMENU)IDM_SCROLL_BAR1,
                                     GetModuleHandle(NULL),
                                     NULL);
+
         scrollbar2 = CreateWindowEx(0,
                                     TEXT("SCROLLBAR"),
                                     0,
@@ -122,6 +122,18 @@ LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM
                                     GetModuleHandle(NULL),
                                     NULL);
 
+        listBox = CreateWindowEx(WS_EX_CLIENTEDGE,
+                                 TEXT("LISTBOX"),
+                                 TEXT(""),
+                                 WS_VISIBLE | WS_CHILD | LBS_NOTIFY | WS_VISIBLE,
+                                 75,
+                                 130,
+                                 250,
+                                 100,
+                                 hwnd,
+                                 (HMENU)IDM_LISTBOX,
+                                 GetModuleHandle(NULL), NULL );
+
         RegisterHotKey(hwnd, IDM_EXIT_KEY, MOD_CONTROL, 0x57);
         RegisterHotKey(hwnd, IDM_MAXIMIZE_KEY, MOD_SHIFT, VK_RETURN);
 
@@ -129,6 +141,9 @@ LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM
         SetScrollRange (scrollbar2, SB_CTL, 400, y, FALSE);
 
         hInst = ((LPCREATESTRUCT)lParam)->hInstance;
+        SendMessage(listBox, LB_ADDSTRING, 0, (LPARAM)"Set color to red");
+        SendMessage(listBox, LB_ADDSTRING, 0, (LPARAM)"Set color to green");
+        SendMessage(listBox, LB_ADDSTRING, 0, (LPARAM)"Set color to blue");
     }
     break;
 
@@ -156,6 +171,40 @@ LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM
         case IDM_FILE_INFO:
         {
             DialogBox(hInstance, MAKEINTRESOURCE(IDM_DLGBOX),hwnd, DialogProc);
+            break;
+        }
+        case IDM_LISTBOX:
+        {
+            if(HIWORD(wParam) == LBN_DBLCLK)
+            {
+                index = SendMessage(listBox, LB_GETCURSEL, 0, 0);
+                SetClassLongPtr(hwnd, GCLP_HBRBACKGROUND, (LONG)CreateSolidBrush(RGB(R, G, B)));
+                InvalidateRect(hwnd, NULL, TRUE);
+                if (index == 0)
+                {
+                    R = 255;
+                    G = 0;
+                    B = 0;
+                    SetClassLongPtr(hwnd, GCLP_HBRBACKGROUND, (LONG)CreateSolidBrush(RGB(R, G, B)));
+                    InvalidateRect(hwnd, NULL, TRUE);
+                }
+                else if (index == 1)
+                {
+                    R = 0;
+                    G = 255;
+                    B = 0;
+                    SetClassLongPtr(hwnd, GCLP_HBRBACKGROUND, (LONG)CreateSolidBrush(RGB(R, G, B)));
+                    InvalidateRect(hwnd, NULL, TRUE);
+                }
+                else if (index == 2)
+                {
+                    R = 0;
+                    G = 0;
+                    B = 255;
+                    SetClassLongPtr(hwnd, GCLP_HBRBACKGROUND, (LONG)CreateSolidBrush(RGB(R, G, B)));
+                    InvalidateRect(hwnd, NULL, TRUE);
+                }
+            }
             break;
         }
         break;
@@ -258,9 +307,13 @@ LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM
 
     case WM_SIZE:
     {
+
         GetWindowRect(hwnd, &rect_win);
-        SetScrollPos(scrollbar1, SB_CTL, rect_win.right - rect_win.left, TRUE);
-        SetScrollPos(scrollbar2, SB_CTL, rect_win.bottom - rect_win.top, TRUE);
+        x_2 = rect_win.right - rect_win.left;
+        y_2 = rect_win.bottom - rect_win.top;
+        MoveWindow(listBox, x_2/2 - 175, y_2 / 2 - 50, 250, 100, TRUE);
+        SetScrollPos(scrollbar1, SB_CTL, x_2, TRUE);
+        SetScrollPos(scrollbar2, SB_CTL, y_2, TRUE);
     }
     break;
 
@@ -299,7 +352,11 @@ LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM
         return TRUE;
     }
 
+    case WM_CTLCOLORSTATIC:
 
+    {
+        SetBkColor (GetDC(hwnd), RGB(R, G, B));
+    }
 
     case WM_DESTROY:
         PostQuitMessage (0);       /* send a WM_QUIT to the message queue */
@@ -326,7 +383,6 @@ BOOL CALLBACK DialogProc(HWND hwndDlg, UINT msg, WPARAM wParam, LPARAM lParam)
             return TRUE;
         }
         break;
-
     }
     return FALSE;
 }
