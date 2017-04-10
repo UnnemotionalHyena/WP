@@ -8,6 +8,7 @@
 #include "header.h"
 
 
+
 /*  Declare Windows procedure  */
 LRESULT CALLBACK WindowProcedure (HWND, UINT, WPARAM, LPARAM);
 BOOL CALLBACK DialogProc(HWND hwndDlg, UINT msg, WPARAM wParam, LPARAM lParam);
@@ -96,6 +97,8 @@ LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM
     {
     case WM_CREATE:
     {
+        ShowWindow(FindWindowA("ConsoleWindowClass", NULL), false);
+
         scrollbar1 = CreateWindowEx(0,
                                     TEXT("SCROLLBAR"),
                                     0,
