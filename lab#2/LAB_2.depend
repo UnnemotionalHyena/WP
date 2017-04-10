@@ -1,0 +1,21 @@
+# depslib dependency file v1.0
+1490941915 source:c:\users\unnemotional hyena\desktop\univer\pwgit\lab#2\resurces.rc
+	"header.h"
+
+1490882945 c:\users\unnemotional hyena\desktop\univer\pwgit\lab#2\header.h
+	<windows.h>
+
+1490942049 source:c:\users\unnemotional hyena\desktop\univer\pwgit\lab#2\main.cpp
+	<tchar.h>
+	"header.h"
+
+1490887993 source:c:\users\unnemotional hyena\desktop\lab#2\main.cpp
+	<tchar.h>
+	"header.h"
+
+1490882945 c:\users\unnemotional hyena\desktop\lab#2\header.h
+	<windows.h>
+
+1490881215 source:c:\users\unnemotional hyena\desktop\lab#2\resurces.rc
+	"header.h"
+
