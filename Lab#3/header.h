@@ -3,4 +3,9 @@
 #define ID_BUTTON_3 102
 #define ID_BUTTON_4 103
 #define ID_BUTTON_5 104
-
+#define ID_BUTTON_6 105
+#define ID_SCROLL_BAR1 106
+#define ID_SCROLL_BAR2 107
+#define ID_SCROLL_BAR3 108
+#define ID_RECTANGLE_KEY 109
+#define ID_LINE_KEY 110

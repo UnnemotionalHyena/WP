@@ -1,5 +1,17 @@
 # depslib dependency file v1.0
-1491673586 source:d:\univer\wp\lab#3\main.cpp
+1491990571 source:d:\univer\wp\lab#3\main.cpp
 	<tchar.h>
 	<windows.h>
+	<windowsx.h>
+	"header.h"
+
+1491895473 d:\univer\wp\lab#3\header.h
+
+1492029971 source:f:\univer\windows programing\wp\lab#3\main.cpp
+	<tchar.h>
+	<windows.h>
+	<windowsx.h>
+	"header.h"
+
+1492026170 f:\univer\windows programing\wp\lab#3\header.h
 
