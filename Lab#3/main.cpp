@@ -228,11 +228,11 @@ LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM
         switch(LOWORD(wParam))
         {
         case ID_BUTTON_1:
-            i +=1;
+            i +=2;
             hpen = CreatePen(PS_SOLID, i, RGB(scroll_pos[0],scroll_pos[1],scroll_pos[2]));
             break;
         case ID_BUTTON_2:
-            i -=1;
+            i -=2;
             if (i<0)
             {
                 i = 0;
