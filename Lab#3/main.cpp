@@ -54,8 +54,8 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
                WS_OVERLAPPEDWINDOW, /* default window */
                0,       /* Windows decides the position */
                0,       /* where the window ends up on the screen */
-               800,                 /* The programs width */
-               600,                 /* and height in pixels */
+               1000,                 /* The programs width */
+               700,                 /* and height in pixels */
                HWND_DESKTOP,        /* The window is a child-window to desktop */
                NULL,                /* No menu */
                hThisInstance,       /* Program Instance handler */
@@ -270,7 +270,7 @@ LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM
 
     case WM_LBUTTONDOWN:
         hdc = GetDC(hwnd);
-        if (LOWORD(lParam) < 800 and LOWORD(lParam) > 150 and HIWORD(lParam) < 600 and HIWORD(lParam) > 10)
+        if (LOWORD(lParam) < 975 and LOWORD(lParam) > 150 and HIWORD(lParam) < 650 and HIWORD(lParam) > 10)
         {
             if (flag_3 or flag_4)
             {
@@ -291,7 +291,7 @@ LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM
 
     case WM_LBUTTONUP:
         hdc = GetDC(hwnd);
-        if (LOWORD(lParam) < 800 and LOWORD(lParam) > 150 and HIWORD(lParam) < 600 and HIWORD(lParam) > 10)
+        if (LOWORD(lParam) < 975 and LOWORD(lParam) > 150 and HIWORD(lParam) < 650 and HIWORD(lParam) > 10)
         {
             if (flag_3 or flag_4)
             {
@@ -323,7 +323,7 @@ LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM
 
         if (wParam & MK_LBUTTON & flag_6)
         {
-            if (LOWORD(lParam) < 800 and LOWORD(lParam) > 150 and HIWORD(lParam) < 600 and HIWORD(lParam) > 10)
+            if (LOWORD(lParam) < 975 and LOWORD(lParam) > 150 and HIWORD(lParam) < 650 and HIWORD(lParam) > 10)
             {
                 hdc = GetDC(hwnd);
                 hpen_white = CreatePen(PS_SOLID, i, RGB(255,255,255));
@@ -337,7 +337,7 @@ LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM
         break;
 
     case WM_RBUTTONDOWN:
-        if (LOWORD(lParam) < 800 and LOWORD(lParam) > 150 and HIWORD(lParam) < 600 and HIWORD(lParam) > 10)
+        if (LOWORD(lParam) < 975 and LOWORD(lParam) > 150 and HIWORD(lParam) < 650 and HIWORD(lParam) > 10)
         {
             if (flag_5)
             {
@@ -349,7 +349,7 @@ LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM
 
     case WM_RBUTTONUP:
         hdc = GetDC(hwnd);
-        if (LOWORD(lParam) < 800 and LOWORD(lParam) > 150 and HIWORD(lParam) < 600 and HIWORD(lParam) > 10)
+        if (LOWORD(lParam) < 975 and LOWORD(lParam) > 150 and HIWORD(lParam) < 650 and HIWORD(lParam) > 10)
         {
             if (flag_5)
             {
