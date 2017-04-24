@@ -1,5 +1,8 @@
 #include "header.h"
 
+Object *ball[1000];
+int nr_object = 0;
+
 /*  Declare Windows procedure  */
 LRESULT CALLBACK WindowProcedure (HWND, UINT, WPARAM, LPARAM);
 
@@ -69,7 +72,6 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
 }
 
 
-/*  This function is called by the Windows function DispatchMessage()  */
 
 LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -77,10 +79,9 @@ LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM
     static HBITMAP hbmMEM;
     static HDC hdc, hdcMEM;
     static int timer_speed = 1;
-    static HBRUSH hbrush;
+    //static HBRUSH hbrush;
     PAINTSTRUCT ps;
-    POINT center = {100,100};
-    static Object object_1(center, 10);
+    srand(GetTickCount());
 
     switch (message)                  /* handle the messages */
     {
@@ -95,22 +96,66 @@ LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM
         SetTimer(hwnd, ID_TIMER, timer_speed, NULL);
         break;
 
-     case WM_LBUTTONDOWN:
-     {
-         static POINT coord;
-         coord.x = LOWORD(lParam);
-         coord.y = HIWORD(lParam);
-         object_1.get_pos(coord);
+    case WM_LBUTTONUP:
+    {
+        static POINT coord;
+        coord.x = LOWORD(lParam);
+        coord.y = HIWORD(lParam);
+        int R = rand() % 256;
+        int G = rand() % 256;
+        int B = rand() % 256;
 
+        if (nr_object == 20)
+        {
+            MessageBox(NULL, "You reached the maximum number of objects!", "Error!",
+                       MB_ICONEXCLAMATION | MB_OK);
+            return 0;
+        }
+        ball[nr_object] = new Object(coord, 1, RGB(R, G, B), nr_object);
+        nr_object += 1;
+        break;
+    }
+    case WM_MOUSEWHEEL:
+        if((short)HIWORD(wParam) > 0)
+        {
+            for (int i = 0; i < nr_object; i++)
+            {
+                if (ball[i] -> acceleration < 11)
+                {
+                    ball[i] -> acceleration += 1;
+                }
+            }
+        }
+        else if ((short)HIWORD(wParam) < 0)
+        {
+            for (int i = 0; i < nr_object; i++)
+            {
+                if (ball[i] -> acceleration > -1)
+                {
+                    ball[i] -> acceleration -= 1;
+                }
+            }
 
-         break;
-     }
+        }
+
+        break;
     case WM_PAINT:
         hdc = BeginPaint(hwnd, &ps);
         GetClientRect(hwnd, &rect);
         FillRect(hdcMEM, &rect,(HBRUSH)GetStockObject(WHITE_BRUSH));
 
-        object_1.movement(hdcMEM, rect, hbrush);
+        for (int i = 0; i < nr_object; i++)
+        {
+            ball[i] -> movement(hdcMEM, rect);
+        }
+        for (int i = 0; i < nr_object - 1; i++)
+        {
+            for (int j = i + 1; j < nr_object ; j++)
+            {
+                interaction(*ball[i], *ball[j]);
+            }
+        }
+
         BitBlt(hdc, 0, 0, rect.right, rect.bottom, hdcMEM, 0, 0, SRCCOPY);
         EndPaint(hwnd, &ps);
         break;
@@ -136,6 +181,7 @@ LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM
         KillTimer(hwnd,ID_TIMER);
         PostQuitMessage (0);       /* send a WM_QUIT to the message queue */
         break;
+
     default:                      /* for messages that we don't deal with */
         return DefWindowProc (hwnd, message, wParam, lParam);
     }

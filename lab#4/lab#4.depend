@@ -1,11 +1,13 @@
 # depslib dependency file v1.0
-1492108078 source:d:\univer\wp\lab#4\ball.cpp
+1493041702 source:d:\univer\wp\lab#4\ball.cpp
 	"header.h"
 
-1492108078 d:\univer\wp\lab#4\header.h
+1493040778 d:\univer\wp\lab#4\header.h
 	<tchar.h>
 	<windows.h>
+	<time.h>
+	<math.h>
 
-1492108085 source:d:\univer\wp\lab#4\main.cpp
+1493039806 source:d:\univer\wp\lab#4\main.cpp
 	"header.h"
 
