@@ -2,6 +2,7 @@
 
 Object *ball[1000];
 int nr_object = 0;
+int temp_nr = 0;
 
 /*  Declare Windows procedure  */
 LRESULT CALLBACK WindowProcedure (HWND, UINT, WPARAM, LPARAM);
@@ -113,6 +114,7 @@ LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM
         }
         ball[nr_object] = new Object(coord, 1, RGB(R, G, B), nr_object);
         nr_object += 1;
+        temp_nr = nr_object;
         break;
     }
     case WM_MOUSEWHEEL:
@@ -140,6 +142,7 @@ LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM
 
         break;
     case WM_PAINT:
+    {
         hdc = BeginPaint(hwnd, &ps);
         GetClientRect(hwnd, &rect);
         FillRect(hdcMEM, &rect,(HBRUSH)GetStockObject(WHITE_BRUSH));
@@ -155,10 +158,48 @@ LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM
                 interaction(*ball[i], *ball[j]);
             }
         }
+        for (int i = 0; i < temp_nr; i++)
+        {
+            int R = rand() % 256;
+            int G = rand() % 256;
+            int B = rand() % 256;
+            if (ball[i]->mull == 1)
+            {
+                POINT center_2 = ball[i]->center;
 
+                if (ball[i]->x_speed > 0 & ball[i]->y_speed < 0)
+                {
+                    center_2.x -= 50;
+                    center_2.y -= 50;
+                }
+                else if (ball[i]->x_speed > 0 & ball[i]->y_speed > 0)
+                {
+                    center_2.x += 50;
+                    center_2.y -= 50;
+                }
+                else if (ball[i]->x_speed < 0 & ball[i]->y_speed > 0)
+                {
+                    center_2.x += 50;
+                    center_2.y += 50;
+                }
+                else if (ball[i]->x_speed < 0 & ball[i]->y_speed < 0)
+                {
+                    center_2.x -= 50;
+                    center_2.y += 50;
+                }
+
+                ball[nr_object] = new Object(center_2, 1, RGB(R, G, B), nr_object);
+                ball[nr_object]->nr_object_hitted = i;
+                ball[nr_object]->change_direction(*ball[i]);
+                ball[nr_object]->mull = 3;
+                ball[i]->mull = 3;
+                nr_object += 1;
+            }
+        }
         BitBlt(hdc, 0, 0, rect.right, rect.bottom, hdcMEM, 0, 0, SRCCOPY);
         EndPaint(hwnd, &ps);
         break;
+    }
 
     case WM_TIMER:
     {

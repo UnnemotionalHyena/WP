@@ -50,14 +50,15 @@ void Object :: colision (RECT rect)
     if(center.y + 25 > rect.bottom - 1)
     {
         nr_object_hitted = 1001;
+        square_check = false;
         acceleration += 1;
-
         y_speed = -abs(y_speed);
 
     }
     if(center.y - 25 < rect.top + 10)
     {
         acceleration += 1;
+        square_check = false;
         nr_object_hitted = 1001;
         y_speed = abs(y_speed);
     }
@@ -80,12 +81,16 @@ void interaction(Object &a, Object &b)
         int G_2 = rand() % 256;
         int B_2 = rand() % 256;
         int distance = sqrt(pow(abs(b.center.x - a.center.x), 2) + pow(abs(b.center.y - a.center.y), 2));
-        if (distance <= 50)
+        if (distance <= 45)
         {
             if (a.square_check & b.square_check || !a.square_check & !b.square_check)
             {
                 a.color = RGB(R, G, B);
                 b.color = RGB (R_2, G_2, B_2);
+                if (a.mull == 0)
+                    a.mull = 1;
+                if (b.mull == 0)
+                    b.mull = 1;
             }
 
             a.nr_object_hitted = b.nr_ball;
@@ -98,5 +103,30 @@ void interaction(Object &a, Object &b)
             return;
         }
     }
+}
+
+void Object::change_direction(Object a)
+{
+    if (a.x_speed > 0 && a.y_speed < 0)
+    {
+        x_speed = abs(x_speed);
+        y_speed = abs(y_speed);
+    }
+    else if (a.x_speed > 0 && a.y_speed > 0)
+    {
+        x_speed = abs(x_speed);
+        y_speed = -abs(y_speed);
+    }
+    else if (a.x_speed < 0 && a.y_speed > 0)
+    {
+        x_speed = -abs(x_speed);
+        y_speed = -abs(y_speed);
+    }
+    else if (a.x_speed < 0 && a.y_speed < 0)
+    {
+        x_speed = -abs(x_speed);
+        y_speed = abs(y_speed);
+    }
 
 }
+

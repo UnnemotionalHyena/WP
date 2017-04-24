@@ -19,6 +19,7 @@ public:
     int x_speed, y_speed, nr_ball, nr_object_hitted;
     int acceleration;
     bool square_check;
+    int mull;
 
     Object()
     {
@@ -39,11 +40,13 @@ public:
         nr_object_hitted = nr_ball;
         square_check = false;
         acceleration = 0;
+        mull = 0;
     };
     void color_object (COLORREF clr);
     void collision(RECT rect);
     void movement(HDC &hdc, RECT rect);
     void colision(RECT rect);
+    void change_direction(Object a);
 };
 
 void interaction(Object &a, Object &b);
